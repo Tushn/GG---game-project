@@ -13,20 +13,27 @@ const TIME_UPDATE = 135;
 const GAME_RUNNING = 0;
 const GAME_LOADING = 1;
 const GAME_INITING = 2;
+const GAME_INIT = 20;
 const GAME_PAUSE = 155;
 const VELOCITY = 10;
 
 const TILE_WIDTH = 32;
 const TILE_HEIGHT = 32;
 
-	// teclado
-	const LEFT = 37;
-	const UP = 38;
-	const RIGHT = 39;
-	const DOWN = 40;
-	const ENTER = 13;
-			
-// Variaveis estatics
+// keyboard
+const LEFT = 37;
+const UP = 38;
+const RIGHT = 39;
+const DOWN = 40;
+const ENTER = 13;
+
+// mouse control
+var element_over;
+
+my_sample.onclick = function(){
+	game.clicked();
+}
+// Static variable for load Images
 Image.spritesLoadedCount = 0;
 Image.spritesToLoad = 0;
 
@@ -34,6 +41,7 @@ Image.spritesToLoad = 0;
 Math.randi = function(n){
 	return Math.round(Math.random()*(n+1));
 }
+
 /* -----------------------------------------------
  -------------------- SPRITE ---------------------
  ----------------------------------------------- */
@@ -50,8 +58,8 @@ var Sprite = function(image, x, y, width, height, divsWidth, divsHeight, context
 		this.camera.x = 0;
 		this.camera.y = 0;
 	}
-	var _timeWorldO = Date.now(); // tempo global
-	var _timeUpdate = TIME_UPDATE; // atualizacao do frame
+	this.timeWorldO = Date.now(); // tempo global
+	this.timeUpdateConst = TIME_UPDATE; // atualizacao do frame
 	
 	this.x = x;	this.y = y; // posicao x e y do Character no mundo
 	this.context = context;
@@ -64,14 +72,14 @@ var Sprite = function(image, x, y, width, height, divsWidth, divsHeight, context
 	this.image.onload = function(){
 		Image.spritesLoadedCount++;
 		if(Image.spritesToLoad<=Image.spritesLoadedCount){
-			gameStatus = GAME_INITING;
+			gameStatus = GAME_INIT;
 		}else
 			gameStatus = GAME_LOADING;
 	}
 	// funcao que controla a atulizacao de frames, ela retorna true a cada atualizacao
 	this.timeUpdate = function(){
-		if(_timeWorldO+_timeUpdate<Date.now()){
-			_timeWorldO=Date.now();  // quando atualizar execute acao
+		if(this.timeWorldO+this.timeUpdateConst<Date.now()){
+			this.timeWorldO=Date.now();  // quando atualizar execute acao
 			return true;
 		}
 		return false;
@@ -99,6 +107,23 @@ var Sprite = function(image, x, y, width, height, divsWidth, divsHeight, context
 }
 
 /* -----------------------------------------------
+ --------------------- FONT ----------------------
+ ----------------------------------------------- */
+var Font = function(font, x, y, tam, context){
+	this.font = font;
+	this.x = x;	 this.y = y;
+	this.tam = tam+"px";
+
+	this.context = context;
+
+	this.width = 0;
+	this.height = 0;
+
+	this.draw = function(){
+		this.context.fillText((this.tam+" "+this.font), this.x, this.y);
+	}
+ }
+/* -----------------------------------------------
  ------------------- COLLISION -------------------
  ----------------------------------------------- */
 var Collision = function(x,y,width,height){
@@ -120,7 +145,7 @@ var Collision = function(x,y,width,height){
 			if(this.collisionY()+this.cheight>entity.collisionY())
 				col_y = true;
 		}else{ // if this obj is more high 
-			if(this.y<entity.collisionY()+entity.cheight)
+			if(this.collisionY()<entity.collisionY()+entity.cheight)
 				col_y = true;
 		}
 		if(col_y){
@@ -140,6 +165,9 @@ var Collision = function(x,y,width,height){
 		return false;
 	}
 	
+	this.collisionDebug = function(context){
+		context.fillRect(this.cx, this.cy, this.cwidth, this.cheight);
+	}
 	// metodo abstrato
 	this.collisionEvent = function(entity){
 		// implemente-o

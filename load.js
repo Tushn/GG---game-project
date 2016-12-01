@@ -1,15 +1,48 @@
+/* TODO:
+ * Separar origem dos eventos dos itens carregados
+ * 
+ *
+*/
 game = new Game(context);
+game.screen_init.push(new HUD("backgroundscreen.png",0,0,640,640,1,1,context));
+game.screen_init.push(new HUD("title.png",110,130,200,100,1,1,context));
+game.screen_init[game.screen_init.length-1].observers.push(new OnMouseEnter(game.screen_init[game.screen_init.length-1], function(){console.log("ok")}));
+game.screen_init[game.screen_init.length-1].observers.push(new OnMouseOut(game.screen_init[game.screen_init.length-1], function(){console.log("ok2")}));
+game.screen_init[game.screen_init.length-1].observers.push(new OnClick(game.screen_init[game.screen_init.length-1], function(){console.log("Cliquei bixo!"); gameStatus=GAME_INITING; }));
+//game.screen_init.elements[game.screen_init.elements.length-1].observers.push(new OnClickMouseClick(game.screen_init.elements[game.screen_init.elements.length-1], function(){console.log("okay")}));
+game.screen_init[game.screen_init.length-1].over = new HUD("title.png",10,130,300,100,1,1,context);
+/*game.screen_init.elements[game.screen_init.elements.length-1].over.clicked = function(){
+	gameStatus = GAME_INITING;
+}*/
 game.map = new Map("level1.png", "level1.png", map, map2, context, game.camera);
+
 player = new Character("rabbit.png",100,10,32*1.5,32*1.5,4,4,context,"player");
 player.points = 0;
-for(var i=0;i<35;i++)
-	game.map.addEntity(new Item("cereza.png",(Math.randi(19)+1)*TILE_WIDTH,((Math.randi(19)+1)*TILE_HEIGHT),147/8,237/8,1,1,context));
 game.map.addPlayer(player);
-game.map.addEntity(new NPC("rabbit_yellow.png",100,210,32*1.5,32*1.5,4,4,context,"enemy"));
+game.map.makeEntity("item","cereza.png",(Math.randi(19)+1)*TILE_WIDTH,((Math.randi(19)+1)*TILE_HEIGHT),147/8,237/8,1,1,context,"fruit");
 game.map.addEntity(new NPC("rabbit_dark.png",100,410,32*1.5,32*1.5,4,4,context,"enemy"));
-game.map.addEntity(new NPC("rabbit_green.png",400,210,32*1.5,32*1.5,4,4,context,"enemy"));
-game.map.addEntity(new NPC("rabbit_red.png",500,410,32*1.5,32*1.5,4,4,context,"enemy"));
+game.map.entities[game.map.entities.length-1].setState(new Wander());
+function clonePrototypeFactory(){
+	// cerejas
+	//~ game.map.reuseRandomPosition(45, 23, 23, 1); // numero de elementos, x, y, id
+	game.map.reuseByNameRandomPosition(45, 15, 15, "fruit");
+	// coelhos
+	game.map.reuseByNameRandomPosition(2, 15, 15, "enemy"); // numero de elementos, x, y, name
+}
 
+/*game.map.addEntity(new Item("cereza.png",(Math.randi(19)+1)*TILE_WIDTH,((Math.randi(19)+1)*TILE_HEIGHT),147/8,237/8,1,1,context));
+game.map.addEntity(new NPC("rabbit_yellow.png",100,210,32*1.5,32*1.5,4,4,context,"enemy"));
+/*for(var i=0;i<35;i++)
+	game.map.addEntity(new Item("cereza.png",(Math.randi(19)+1)*TILE_WIDTH,((Math.randi(19)+1)*TILE_HEIGHT),147/8,237/8,1,1,context));
+
+game.map.addEntity(new NPC("rabbit_yellow.png",100,210,32*1.5,32*1.5,4,4,context,"enemy"));
+game.map.entities[game.map.entities.length-1].setState(new Wander());
+game.map.addEntity(new NPC("rabbit_dark.png",100,410,32*1.5,32*1.5,4,4,context,"enemy"));
+game.map.entities[game.map.entities.length-1].setState(new Wander());
+game.map.addEntity(new NPC("rabbit_green.png",400,210,32*1.5,32*1.5,4,4,context,"enemy"));
+game.map.entities[game.map.entities.length-1].setState(new Wander());
+game.map.addEntity(new NPC("rabbit_red.png",500,410,32*1.5,32*1.5,4,4,context,"enemy"));
+game.map.entities[game.map.entities.length-1].setState(new Wander());*/
 
 function update(){
 	game.update();
@@ -42,8 +75,7 @@ function control_keydown(event){
 			if(gameStatus != GAME_PAUSE)
 				gameStatus = GAME_PAUSE;
 			else
-				gameStatus = GAME_RUNNING;
-			
+				gameStatus = GAME_RUNNING;			
 			break;
 	}
 	player.codePressed[keypressed] = 1;

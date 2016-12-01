@@ -1,0 +1,4 @@
+X - Camera
+- Collision tiles
+X - Reorder 
+X - PAUSE

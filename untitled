@@ -1,0 +1,81 @@
+// HUD - "Heads Up Display" is a controller for interface like buttons and legends
+
+// HUD state is unique state, it has sprite animation and collision
+// HUD_state belongs to HUD_element
+
+// HUD_element has many HUD states
+var HUD_element = function(image, x, y, width, height, divsWidth, divsHeight, context, verify){
+	Sprite.call(this, image, x, y, width, height, divsWidth, divsHeight, context);
+	Collision.call(this, 0, 0, width, height);	
+	Subject.call(this);
+
+	//~ this.status.entered = false;
+	this.status;
+
+	this.text = new Font("Arial", 0, 0, 12, context);
+	
+	this.current;
+	/*if(verify==undefined){
+		this.initial = new HUD_element(image, x, y, width, height, divsWidth, divsHeight, context, true);
+		this.over = new HUD_element(image, x, y, width, height, divsWidth, divsHeight, context, true);
+		this.current = this.initial;
+	}*/
+	this.clicked = function(){} // abstract method for event click, [DEPRECTATED]
+	// Draw methods
+	this.draw = function(){
+		// Controle dos slides da animacao
+		if(this.current.walking>0 && this.current.slide < this.current.slide_limit-1)
+			if(this.current.timeUpdate())
+				this.current.slide++;
+		else
+			this.current.slide=0;
+		
+		this.current.context.drawImage(this.current.image, 
+		(this.current.image.width/this.current.divsWidth)*this.current.slide, (this.current.image.height/this.current.divsHeight)*this.current.direction, 
+		(this.current.image.width/this.current.divsWidth), (this.current.image.height/this.current.divsHeight),
+		this.current.x, this.current.y,
+		this.current.width, this.current.height);
+		this.current.text.draw();
+	}
+	
+	this.collisionEntity = function(){
+		// if this obj is than high position and its base is less high than other
+		if(this.current.collisionY()<=mouse.layerY-my_sample.offsetTop && 
+		this.current.collisionY()+this.current.cheight>=mouse.layerY-my_sample.offsetTop && 
+		this.current.collisionX()<=mouse.layerX-my_sample.offsetLeft && 
+		this.current.collisionX()+this.current.cwidth>=mouse.layerX-my_sample.offsetLeft ){
+			this.notifyAll();
+			return true;
+		}
+		return false;
+	}
+	
+	this.update = function(){
+		if(this.collisionEntity()){
+			this.current = this.over;
+			// global control of mouse
+			element_over=this.current;
+		}else{
+			if(this.current == this.over && element_over==this.current) element_over=undefined;
+			this.current = this.initial;
+		}
+		
+		this.draw();
+	}
+	this.notifyAll = function(){
+		for(var i in this.observers) this.observers[i].update();
+	}
+}
+
+// Heads up display
+var HUD = function(){
+	this.elements = [];
+	
+	this.addElement = function(image, x, y, width, height, divsWidth, divsHeight, context){
+		this.elements.push(new HUD_element(image, x, y, width, height, divsWidth, divsHeight, context));
+	}
+	// context.font = "italic bold 30px serif";
+	this.update = function(){
+		for(var i in this.elements) this.elements[i].update();
+	}
+}

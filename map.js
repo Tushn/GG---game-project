@@ -56,7 +56,27 @@ var Map = function(src1, src2, map1, map2, context, camera){
 		entity.map = this;
 		entity.camera = this.camera;
 	}
-	
+	this.makeEntity = function(type, image, x, y, width, height, divsWidth, divsHeight, context, name){
+		this.addEntity(FactoryEntity.make(type, image, x, y, width, height, divsWidth, divsHeight, context, name));
+	}
+	this.reuseEntity = function(id, changed){
+		this.addEntity(FactoryEntity.reuse(this.entities[id], changed));
+	}
+	this.reuseRandomPosition = function(times, tileNumX, tileNumY, id){
+		id = (id==undefined)? this.entities.length-1 : id;
+		var objs = FactoryEntity.reuseRandomPosition(this.entities[id], times, tileNumX, tileNumY);
+		for(var i in objs) this.addEntity(objs[i]);
+	}
+	this.reuseByNameRandomPosition = function(times, tileNumX, tileNumY, name){
+		var text = "", cont = -1;
+		while(text!=name && cont < this.entities.length){
+			text = this.entities[++cont].name;
+		}
+		if(text!=name) throw new Error("Object with name '"+name+"' is not found");
+		var objs = FactoryEntity.reuseRandomPosition(this.entities[cont], times, tileNumX, tileNumY);
+		
+		for(var i=0;i<times;i++) this.addEntity(objs[i]);
+	}
 	// add player in player reference and entity
 	this.addPlayer = function(player){
 		this.addEntity(player);
@@ -125,4 +145,36 @@ var Map = function(src1, src2, map1, map2, context, camera){
 			}
 		}
 	}
+}
+
+var FactoryEntity = function(){}
+FactoryEntity.make = function(type, image, x, y, width, height, divsWidth, divsHeight, context, name){
+	switch(type.toUpperCase()){
+		case "ITEM":
+			return new Item(image, x, y, width, height, divsWidth, divsHeight, context, name);
+			break;
+		case "CHARACTER":
+			return new Character(image, x, y, width, height, divsWidth, divsHeight, context, name);
+			break;
+		case "NPC":
+			return new NPC(image, x, y, width, height, divsWidth, divsHeight, context, name);
+			break;
+	}
+}
+FactoryEntity.reuse = function(object, changed){
+	var obj = object.clone();
+	if(changed!=undefined)
+		for(var i in changed)
+			obj[i] = changed[i];
+	return obj;
+}
+FactoryEntity.reuseRandomPosition = function(object, times, tileNumX, tileNumY){
+	var obj = [];
+	for(var i=0;i<times;i++){
+		obj.push(object.clone());
+		// obj.image = object.image.cloneNode();
+		obj[obj.length-1].x = (Math.randi(tileNumX)+1)*TILE_WIDTH;
+		obj[obj.length-1].y = (Math.randi(tileNumY)+1)*TILE_HEIGHT;
+	}
+	return obj;
 }
