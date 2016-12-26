@@ -140,9 +140,8 @@ var Map = function(src1, src2, map1, map2, context, camera){
 			
 			this.sortEntities();
 			// update entity
-			for(var i=0;i<this.entities.length;i++){
+			for(var i=0;i<this.entities.length;i++)
 				this.entities[i].update(this.camera); // update
-			}
 		}
 	}
 }

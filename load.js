@@ -105,6 +105,7 @@ function control_keyup(event){
 		player.codePressed[keyout] = 0;
 	keyout=4;
 }
+
 // event listeners
 document.addEventListener("keydown", control_keydown, false);
 document.addEventListener("keyup", control_keyup, false);

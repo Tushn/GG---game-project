@@ -2,10 +2,6 @@
 This demo for game in JavaScript using Canvas
 
 ## TODO
-- Tiles
-	-- Animate
-	-- Events
-	-- Collisions
 - Events
 - HUD
 	-- Animations

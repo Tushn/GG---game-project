@@ -1,3 +1,8 @@
+/* -------------------------------------------------------------------
+ * ------------------------- Entity.js -------------------------------
+ * ------- Classes for entities in game: characters and items --------
+ * ---------------------------------------------------------------- */
+// Prototype - Used for clones objects like characters and items
 var Prototype = function(className){
 	var _class = (className==undefined)? "Object" : className;
 	this.clone = function(){
