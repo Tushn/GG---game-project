@@ -1,13 +1,31 @@
 // Map and Tiles
+var TILES = Object.freeze({PASSABILITY: 0, HEIGHT:1 }); // this is enumarete of JS
 var Tile = function(dy, dx, dims, img, context){
 	this.dx = dx;
 	this.dy = dy;
 	this.sx = dims[0];
 	this.sy = dims[1];
-
+	// variables of passability
+	this.passability = dims[2];
+	this.height = dims[3];
+	
 	this.img = img;
 	this.context = context;
+	var _type = [0,0]; // passability, height
 	
+	// Getters and setters	
+	this.getType = function(type){ 
+		if(type==undefined) 
+			return _type; 
+		else 
+			return _type[type]; 
+	}
+	this.setType = function(type, value){
+		if(value==undefined) value = 1;			
+		_type[type] = value;
+	}
+	
+	// Draw tile
 	this.draw = function(cx, cy){
 		this.context.drawImage(img, this.sx*TILE_WIDTH, this.sy*TILE_WIDTH, TILE_WIDTH, TILE_HEIGHT, this.dx-cx, this.dy-cy, TILE_WIDTH, TILE_HEIGHT);
 	}
@@ -46,9 +64,9 @@ var Map = function(src1, src2, map1, map2, context, camera){
 	img_level_2.onload = img_level_1.onload;
 	
 	
-	/**********************************
-	*********** METHODS ***************
-	**********************************/
+	/*******************************
+	*********** METHODS ************
+	********************************/
 	// GETTERS AND SETTERS
 	// add new entity in array
 	this.addEntity = function(entity){
