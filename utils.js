@@ -30,6 +30,9 @@ const ENTER = 13;
 // mouse control
 var element_over;
 
+// tiles
+var TILES = Object.freeze({PASSABILITY: 0, HEIGHT:1 }); // this is enumarete of JS
+
 my_sample.onclick = function(){
 	game.clicked();
 }

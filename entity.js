@@ -24,11 +24,26 @@ var Entity = function(image, x, y, width, height, divsWidth, divsHeight, context
 	this.name=name;
 	this.entities = [];
 	this.camera;
+	this.currentTiles = []; // these tiles are reserved for current map
 	//~ this.map; // define position
 	
 	this.verifyCollision = function(){
 		for(var i=0;i<this.entities.length;i++)
 			this.collisionEntity(this.entities[i]);
+	}
+	this.verifyTiles = function(map){
+		// if this entity has none tile
+		if(currentTiles.length==0)
+			for(var i=0;i<map.length;i++) // layers
+				for(var j=0;j<map[i].length;j++) // column
+					for(var k=0;k<map[i][j].length;k++) // row
+						this.collisionTile(map[i][j][k], j, k);
+	}
+	this.collisionTile = function(tile, x, y){
+		if(!tile.getType(TILES.PASSABILITY))
+			return false;
+		//if(x*TILE_WIDTH > this.x)
+		
 	}
 	this.update = function(){
 		this.verifyCollision();

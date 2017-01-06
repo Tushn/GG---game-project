@@ -1,5 +1,4 @@
 // Map and Tiles
-var TILES = Object.freeze({PASSABILITY: 0, HEIGHT:1 }); // this is enumarete of JS
 var Tile = function(dy, dx, dims, img, context){
 	this.dx = dx;
 	this.dy = dy;
