@@ -1,7 +1,6 @@
 /* TODO:
  * Separar origem dos eventos dos itens carregados
  * 
- *
 */
 game = new Game(context);
 game.screen_init.push(new HUD("backgroundscreen.png",0,0,640,640,1,1,context));
@@ -58,18 +57,22 @@ function control_keydown(event){
 		case LEFT:
 			player.x -= VELOCITY;
 			keypressed = 1;
+			// console.log('Kdown: LEFT')
 			break;
 		case RIGHT:
 			player.x += VELOCITY;
 			keypressed = 2;
+			// console.log('Kdown: RIGHT')
 			break;
 		case UP:
 			player.y -= VELOCITY;
 			keypressed = 3;
+			// console.log('Kdown: UP')
 			break;
 		case DOWN:
 			player.y += VELOCITY;
 			keypressed = 0;
+			// console.log('Kdown: DOWN')
 			break;
 		case ENTER:
 			if(gameStatus != GAME_PAUSE)
@@ -106,6 +109,18 @@ function control_keyup(event){
 	keyout=4;
 }
 
+function click_out_page(){
+	// Avoid error when: "Keyup event not firing when keydown is released after a click outside document"
+	// remove a direction
+	player.codePressed[0] = 0;
+	player.codePressed[1] = 0;
+	player.codePressed[2] = 0;
+	player.codePressed[3] = 0;
+	// remove a walking animation
+	player.walking -= 1;
+}
+
 // event listeners
 document.addEventListener("keydown", control_keydown, false);
 document.addEventListener("keyup", control_keyup, false);
+window.addEventListener('blur', click_out_page);

@@ -42,7 +42,6 @@ var Game = function(context){
 				//this.map.pause();
 				break;
 		}
-		
 		this.context.fillRect(mouse.layerX-my_sample.offsetLeft, mouse.layerY-my_sample.offsetTop,30, 30);
 	}
 	this.clicked = function(){

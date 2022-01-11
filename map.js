@@ -40,6 +40,9 @@ var Map = function(src1, src2, map1, map2, context, camera){
 	this.camera = camera; if(camera==undefined){ this.camera={}; this.camera.x = 0; this.camera.y = 0; };
 	this.player;
 	
+	Map.width = TILE_WIDTH*map1[0].length;
+	Map.height = TILE_HEIGHT*map1.length;
+	
 	img_level_1.src = "img/" + src1; // imagem com url (image) do Character
 	img_level_2.src = "img/" + src2; // imagem com url (image) do Character
 	
@@ -162,6 +165,10 @@ var Map = function(src1, src2, map1, map2, context, camera){
 		}
 	}
 }
+
+// statics variables for dimensions, they are updating on constructor
+Map.width = 320;
+Map.height = 320;
 
 var FactoryEntity = function(){}
 FactoryEntity.make = function(type, image, x, y, width, height, divsWidth, divsHeight, context, name){

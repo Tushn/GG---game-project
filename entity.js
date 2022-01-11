@@ -77,12 +77,14 @@ var Character = function(image, x, y, width, height, divsWidth, divsHeight, cont
 			}
 		if(this.x < 0)
 			this.x = 0;
-		else if(this.x > canvas.width-this.width)
-			this.x = canvas.width-this.width;
+		// else if(this.x > canvas.width-this.width)
+		else if(this.x > Map.width-this.width)
+			this.x = Map.width-this.width;
 		if(this.y < 0)
 			this.y = 0;
-		else if(this.y > canvas.height-this.height)
-			this.y = canvas.height-this.height;
+		// else if(this.y > canvas.height-this.height)
+		else if(this.y > Map.height-this.height)
+			this.y = Map.height-this.height;
 	
 		this.context.drawImage(this.image, 
 		(this.image.width/this.divsWidth)*this.slide, (this.image.height/this.divsHeight)*this.direction,
